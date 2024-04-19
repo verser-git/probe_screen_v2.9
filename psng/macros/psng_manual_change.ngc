@@ -1,0 +1,80 @@
+; Manual toolchange with automatic tool length measurement
+
+o<psng_manual_change> sub
+
+; BEGIN PSNG PREAMBLE
+M73 ; Save and autorestore model states. This will be used only in case of error, otherwise we will invalidate it.
+o<_psng_modal_save> call
+o<_psng_hook> call [1]
+; END PSNG PREAMBLE
+
+;(debug, in change tool_in_spindle=#<tool_in_spindle> current_pocket=#<current_pocket>)
+;(debug, selected_tool=#<selected_tool> selected_pocket=#<selected_pocket>)
+
+; Save some info, otherwise after the M6 this information is gone!
+#<tool> = #<selected_tool>
+#<pocket> = #<selected_pocket>
+
+; We must execute this only in the milltask interpreter
+; or preview will break, so test for '#<_task>' which is 1 for
+; the milltask interpreter and 0 in the UI's
+O100 if [#<_task> EQ 0]
+    (debug, Task ist Null)
+    M72 ; Restore modal state
+    O100 return [999]
+O100 endif
+
+; Ensure we're in G90 / absolute mode
+G90
+
+; First go up & then move to tool sensor position
+G53 G0 Z[#<_ini[CHANGE_POSITION]Z>]
+G53 G0 X[#<_ini[CHANGE_POSITION]X>] Y[#<_ini[CHANGE_POSITION]Y>]
+G53 G0 Z[#<_ini[CHANGE_POSITION]Z>]
+
+
+; Cancel tool offset
+G49
+
+; using the code being remapped here means 'use builtin behaviour'
+M6
+
+
+; First go up & then move to tool sensor position
+G53 G0 Z[#<_ini[CHANGE_POSITION]Z>]
+G53 G0 X[#<_ini[TOOLSENSOR]X>] Y[#<_ini[TOOLSENSOR]Y>]
+G53 G0 Z[#<_ini[TOOLSENSOR]Z>]
+
+
+; Measure Tool
+o<_psng_probe_tool> call [#<_ini[TOOLSENSOR]MAXPROBE>]
+;(debug, return value =#<_value>)
+O1 if [#<_value> EQ -1]
+    M72 ; Restore modal state
+    O1 return [-3] ; indicate probe already tripped to epilog
+O1 else if [#<_value> EQ -2]
+    M72 ; Restore modal state
+    O1 return [-4] ; indicate probe contact failure to epilog
+O1 else if [#<_value> EQ -3]
+    M72 ; Restore modal state
+    (ABORT, Probe failed to make contact without ERR signal)
+O1 endif
+
+; Move off the Tool Sensor
+G53 G1 Z[#<_ini[TOOLSENSOR]Z>]  F#<_ini[TOOLSENSOR]RAPID_SPEED>
+
+#<touch_result> = #5063
+#<setterheight> = #<_hal[probe.setterheight]>
+#<blockheight> = #<_hal[probe.blockheight]>
+
+G10 L1 P#<tool> Z[#<touch_result> - #<_hal[probe.setterheight]> + #<_hal[probe.blockheight]>]
+G43
+
+; BEGIN PSNG POSTAMBLE
+M71 ; Invalidate Modal Autorestore
+o<_psng_modal_restore> call
+; END PSNG POSTAMBLE
+
+; signal success by returning a value > 0:
+o<psng_manual_change> endsub [1]
+m2
