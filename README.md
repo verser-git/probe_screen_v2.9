@@ -1,4 +1,4 @@
-# Probe Screen for LinuxCNC 2.8
+# Probe Screen for LinuxCNC 2.9
 
 ## Info
 
