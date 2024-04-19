@@ -45,7 +45,7 @@ Details in gmoccapy_prepare folder.
 
 ## About Stop move when probe tripped
 
-Linuxcnc v2.8 stops move when probe tripped for safety in all modes. This is a good approach.
+Linuxcnc stops move when probe tripped for safety in all modes. This is a good approach.
 It is possible to exclude stops in AUTO mode, i.e. when the g-code program is being executed.
 This approach is described in no_stop_in_auto folder
 
