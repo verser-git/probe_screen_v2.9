@@ -638,11 +638,26 @@ class ProbeScreen(object):
         dialog.destroy()
         return responce == Gtk.ResponseType.YES
 
-    def warning_dialog(self, message, secondary=None, title=_("Probe Screen NG")):
-        """ displays a warning dialog """
-        return self._dialog(
-            Gtk.MessageType.WARNING, Gtk.ButtonsType.OK, message, secondary, title
-        )
+    # display warning dialog
+    def warning_dialog(self, message, secondary = None, title = _("Probe Screen")):
+        dialog = Gtk.MessageDialog(self.window,
+                                   Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, message)
+        # if there is a secondary message then the first message text is bold
+        if secondary:
+            dialog.format_secondary_text(secondary)
+        ok_button = Gtk.Button.new_with_mnemonic("_Ok")
+        ok_button.set_size_request(-1, 56)
+        ok_button.connect("clicked",lambda w:dialog.response(Gtk.ResponseType.OK))
+        box = Gtk.HButtonBox()
+        box.add(ok_button)
+        dialog.action_area.add(box)
+        dialog.set_border_width(5)
+        dialog.show_all()
+        dialog.set_title(title)
+        response = dialog.run()
+        dialog.destroy()
+        return response == Gtk.ResponseType.OK
 
     def error_dialog(self, message, secondary=None, title=_("Probe Screen NG")):
         """ displays a warning dialog and exits the probe screen"""
@@ -3165,6 +3180,7 @@ class ProbeScreen(object):
                     "Please change to tool\n\n# {0:d}     {1}\n\n then click OK."
                 ).format(toolprepnumber, tooldescr)
             result = self.warning_dialog(message, title=_("Manual Toolchange"))
+            print("result = ", result)
             if result:
 #                self.vcp_reload() can cause a hang-up issue during tool change and OK button presses
                 self.halcomp["toolchange-changed"] = True
