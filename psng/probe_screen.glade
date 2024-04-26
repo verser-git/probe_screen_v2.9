@@ -2428,7 +2428,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label4">
+                                      <object class="GtkLabel" id="label_probe_workpiece">
                                         <property name="height-request">32</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
@@ -2440,7 +2440,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="label13">
+                                      <object class="GtkLabel" id="label_probe_tool_setter">
                                         <property name="height-request">32</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
@@ -2449,6 +2449,34 @@
                                       <packing>
                                         <property name="x">96</property>
                                         <property name="y">24</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkCheckButton" id="chk_enbl_remap_m6">
+                                        <property name="label" translatable="yes">Enable</property>
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="receives-default">False</property>
+                                        <property name="yalign">0.5</property>
+                                        <property name="image-position">bottom</property>
+                                        <property name="draw-indicator">True</property>
+                                        <signal name="toggled" handler="on_chk_enbl_remap_m6_toggled" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="x">404</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="HAL_LED" id="hal_led_enbl_remap_m6">
+                                        <property name="width-request">7</property>
+                                        <property name="height-request">7</property>
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="led-blink-rate">0</property>
+                                        <property name="led-size">7</property>
+                                      </object>
+                                      <packing>
+                                        <property name="x">480</property>
                                       </packing>
                                     </child>
                                   </object>

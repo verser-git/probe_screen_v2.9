@@ -182,6 +182,8 @@ def change_epilog(self, **words):
 
         if self.blocks[self.remap_level].builtin_used:
             if self.return_value > 0.0:
+                if self.return_value == 5 :
+                    print ("---------- remap M6 disabled by user")
                 print ("---------- M6 builtin recursion, nothing to do")
                 yield INTERP_OK
             else:

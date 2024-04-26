@@ -300,7 +300,6 @@ class ProbeScreen(object):
         #---------------------------
         # Remap M6 vars
         #---------------------------
-        self.hal_led_set_m6 = self.builder.get_object("hal_led_set_m6")
         self.frm_probe_pos = self.builder.get_object("frm_probe_pos")
         self.spbtn_setter_height = self.builder.get_object("spbtn_setter_height")
         self.spbtn_block_height = self.builder.get_object("spbtn_block_height")
@@ -308,6 +307,31 @@ class ProbeScreen(object):
         self.btn_probe_workpiece = self.builder.get_object("btn_probe_workpiece")
         self.btn_tool_dia = self.builder.get_object("btn_tool_dia")
         self.tooledit1 = self.builder.get_object("tooledit1")
+        self.label_probe_workpiece = self.builder.get_object("label_probe_workpiece")
+        self.label_probe_tool_setter = self.builder.get_object("label_probe_tool_setter")
+        self.chk_enbl_remap_m6 = self.builder.get_object("chk_enbl_remap_m6")
+        self.chk_enbl_remap_m6.set_active( self.prefs.getpref( "enbl_remap_m6", False, bool ) )
+        self.hal_led_enbl_remap_m6 = self.builder.get_object("hal_led_enbl_remap_m6")
+        self.halcomp.newpin( "enbl_remap_m6", hal.HAL_BIT, hal.HAL_OUT )
+        if self.chk_enbl_remap_m6.get_active():
+            self.btn_probe_tool_setter.set_sensitive( True )
+            self.btn_probe_workpiece.set_sensitive( True )
+            self.spbtn_setter_height.set_sensitive( True )
+            self.spbtn_block_height.set_sensitive( True )
+            self.label_probe_workpiece.set_sensitive( True )
+            self.label_probe_tool_setter.set_sensitive( True )           
+            self.halcomp["enbl_remap_m6"] = True
+            self.hal_led_enbl_remap_m6.set_active(True)
+        else:
+            self.btn_probe_tool_setter.set_sensitive( False )
+            self.btn_probe_workpiece.set_sensitive( False  )
+            self.spbtn_setter_height.set_sensitive( False  )
+            self.spbtn_block_height.set_sensitive( False  )
+            self.label_probe_workpiece.set_sensitive( False  )
+            self.label_probe_tool_setter.set_sensitive( False  )           
+            self.halcomp["enbl_remap_m6"] = False 
+            self.hal_led_enbl_remap_m6.set_active(False )
+        
 
         # make the pins for tool measurement
         self.halcomp.newpin("setterheight", hal.HAL_FLOAT, hal.HAL_OUT)
@@ -320,6 +344,7 @@ class ProbeScreen(object):
         hal_glib.GPin(pin).connect("value_changed", self.on_tool_change)
 
         self._init_tool_sensor_data()
+ 
         # spbtn initialization --> self.on_ps_hal_stat_metric_mode_changed
         
         # --------------------------
@@ -2930,6 +2955,28 @@ class ProbeScreen(object):
         c = "Workpiece Height = " + "%.4f" % gtkspinbutton.get_value()
         self.add_history_text(c)
 
+    def on_chk_enbl_remap_m6_toggled( self, gtkcheckbutton, data = None ):
+        if gtkcheckbutton.get_active():
+            self.btn_probe_tool_setter.set_sensitive( True )
+            self.btn_probe_workpiece.set_sensitive( True )
+            self.spbtn_setter_height.set_sensitive( True )
+            self.spbtn_block_height.set_sensitive( True )
+            self.label_probe_workpiece.set_sensitive( True )
+            self.label_probe_tool_setter.set_sensitive( True )           
+            self.halcomp["enbl_remap_m6"] = True
+            self.hal_led_enbl_remap_m6.set_active(True)
+        else:
+            self.btn_probe_tool_setter.set_sensitive( False )
+            self.btn_probe_workpiece.set_sensitive( False  )
+            self.spbtn_setter_height.set_sensitive( False  )
+            self.spbtn_block_height.set_sensitive( False  )
+            self.label_probe_workpiece.set_sensitive( False  )
+            self.label_probe_tool_setter.set_sensitive( False  )           
+            self.halcomp["enbl_remap_m6"] = False 
+            self.hal_led_enbl_remap_m6.set_active(False )
+            
+        self.prefs.putpref( "enbl_remap_m6", gtkcheckbutton.get_active(), bool )
+
 
     #---------------------------
     # Remap M6 metods
@@ -2954,7 +3001,8 @@ class ProbeScreen(object):
         ):
             self.btn_tool_dia.set_sensitive(False)
             self.btn_probe_tool_setter.set_sensitive(False)
-
+            self.chk_enbl_remap_m6.set_active(False)
+            
             self.error_dialog(
                 "Invalid INI Configuration",
                 secondary="Please check the TOOLSENSOR INI configurations",

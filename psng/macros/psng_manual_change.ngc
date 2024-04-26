@@ -39,6 +39,10 @@ G49
 ; using the code being remapped here means 'use builtin behaviour'
 M6
 
+O200 if [#<_hal[probe.enbl_remap_m6]> EQ 0]
+O200 return [5] ; tool measurement disabled
+O200 endif
+
 
 ; First go up & then move to tool sensor position
 G53 G0 Z[#<_ini[CHANGE_POSITION]Z>]
