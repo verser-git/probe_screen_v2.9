@@ -321,7 +321,7 @@ class ProbeScreen(object):
             self.label_probe_workpiece.set_sensitive( True )
             self.label_probe_tool_setter.set_sensitive( True )           
             self.halcomp["enbl_remap_m6"] = True
-            self.hal_led_enbl_remap_m6.hal_pin.set(1)
+            self.hal_led_enbl_remap_m6.set_active(True)
         else:
             self.btn_probe_tool_setter.set_sensitive( False )
             self.btn_probe_workpiece.set_sensitive( False  )
@@ -330,7 +330,7 @@ class ProbeScreen(object):
             self.label_probe_workpiece.set_sensitive( False  )
             self.label_probe_tool_setter.set_sensitive( False  )           
             self.halcomp["enbl_remap_m6"] = False 
-            self.hal_led_enbl_remap_m6.hal_pin.set(0)
+            self.hal_led_enbl_remap_m6.set_active(False )
         
 
         # make the pins for tool measurement
@@ -2964,7 +2964,7 @@ class ProbeScreen(object):
             self.label_probe_workpiece.set_sensitive( True )
             self.label_probe_tool_setter.set_sensitive( True )           
             self.halcomp["enbl_remap_m6"] = True
-            self.hal_led_enbl_remap_m6.hal_pin.set(1)
+            self.hal_led_enbl_remap_m6.set_active(True)
         else:
             self.btn_probe_tool_setter.set_sensitive( False )
             self.btn_probe_workpiece.set_sensitive( False  )
@@ -2973,7 +2973,7 @@ class ProbeScreen(object):
             self.label_probe_workpiece.set_sensitive( False  )
             self.label_probe_tool_setter.set_sensitive( False  )           
             self.halcomp["enbl_remap_m6"] = False 
-            self.hal_led_enbl_remap_m6.hal_pin.set(0)
+            self.hal_led_enbl_remap_m6.set_active(False )
             
         self.prefs.putpref( "enbl_remap_m6", gtkcheckbutton.get_active(), bool )
 
