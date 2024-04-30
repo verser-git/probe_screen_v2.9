@@ -346,6 +346,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
+                                <property name="tooltip-text" translatable="yes">X-</property>
                                 <property name="xalign">0</property>
                                 <signal name="released" handler="on_xm_released" swapped="no"/>
                                 <child>
