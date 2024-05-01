@@ -3,9 +3,6 @@
 
 o<_psng_probe> sub
 
-; Save and autorestore model states
-M73
-
 ; Paramaters for this macro
 #<search_distance> = #1
 #<search_axis> = #2
@@ -164,6 +161,9 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
     O82 while [#<count> LT #<repeat_loop_times>]
 
 O7 endif
+
+; Set absolute mode
+G90
 
 o<_psng_probe> endsub [0]
 M2
