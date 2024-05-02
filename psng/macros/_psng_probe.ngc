@@ -3,6 +3,8 @@
 
 o<_psng_probe> sub
 
+#<absolute> = #<_absolute> (remember in local variable if G90 was set)
+
 ; Paramaters for this macro
 #<search_distance> = #1
 #<search_axis> = #2
@@ -41,6 +43,7 @@ M66 E0 L0
 
 ; Check if probe is already tripped
 O10 if [#<_hal[motion.probe-input]> EQ 1]
+    o<restore_abs> call [#<absolute>]
     O10 return [-1]
 O10 endif
 
@@ -62,6 +65,7 @@ O8 do
 
     ; Check to see if we failed to make contact
     O12 if [#5070 EQ 0]
+        o<restore_abs> call [#<absolute>]
         O12 return [-2]
     O12 endif
 
@@ -86,6 +90,7 @@ O8 do
     #<count> = [#<count> + [1]]
     ; Check count overflow
     O91 if [#<count> EQ #<repeat_loop_times>]
+        o<restore_abs> call [#<absolute>]
         O91 return [-3]
     O91 endif
     O14 if [#<count> LT #<repeat_loop_times>]
@@ -108,6 +113,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
 
     ; Check if probe is already tripped
     O21 if [#<_hal[motion.probe-input]> EQ 1]
+        o<restore_abs> call [#<absolute>]
         O21 return [-1]
     O21 endif
 
@@ -130,6 +136,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
 
         ; Check to see if we failed to make contact
         O25 if [#5070 EQ 0]
+            o<restore_abs> call [#<absolute>]
             O25 return [-2]
         O25 endif
         
@@ -155,15 +162,21 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
         #<count> = [#<count> + 1]
         ; Check count overflow
         O83 if [#<count> EQ #<repeat_loop_times>]
+            o<restore_abs> call [#<absolute>]
             O83 return [-3]
         O83 endif
 
     O82 while [#<count> LT #<repeat_loop_times>]
 
 O7 endif
-
-; Set absolute mode
-G90
+o<restore_abs> call [#<absolute>]
 
 o<_psng_probe> endsub [0]
+
+o<restore_abs> sub
+  o110 if [#1 EQ 1]
+    G90 (restore G90 only if it was set on entry:)
+  o110 endif
+o<restore_abs> endsub
+
 M2

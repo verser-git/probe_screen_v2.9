@@ -1,7 +1,6 @@
 o<_probe_tool> sub
 
-; Save and autorestore model states
-M73
+#<absolute> = #<_absolute> (remember in local variable if G90 was set)
 
 ; Paramaters for this macro
 #<search_distance> = #1
@@ -36,6 +35,7 @@ M66 P0 L0
 
 ; Check if probe is already tripped
 O10 if [#<_hal[motion.probe-input]> EQ 1]
+    o<restore_abs> call [#<absolute>]
     O10 return [-1]
 O10 endif
 
@@ -45,6 +45,7 @@ G38.3 Z[#<search_distance>]
 
 ; Check to see if we failed to make contact
 O12 if [#5070 EQ 0]
+    o<restore_abs> call [#<absolute>]
     O12 return [-2]
 O12 endif
 
@@ -65,6 +66,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
 
     ; Check if probe is already tripped
     O21 if [#<_hal[motion.probe-input]> EQ 1]
+        o<restore_abs> call [#<absolute>]
         O21 return [-1]
     O21 endif
 
@@ -72,6 +74,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
     G38.3 Z[#<_hal[probe.ps_probe_latch]>*2*#<search_direction>]        
     ; Check to see if we failed to make contact
     O25 if [#5070 EQ 0]
+        o<restore_abs> call [#<absolute>]
         O25 return [-2]
     O25 endif
         
@@ -80,6 +83,15 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
     G1 Z[-#<_hal[probe.ps_probe_latch]>*#<search_direction>]
 
 O7 endif
+
+o<restore_abs> call [#<absolute>]
     
 o<_probe_tool> endsub [0]
+
+o<restore_abs> sub
+    o110 if [#1 EQ 1]
+      G90 (restore G90 only if it was set on entry:)
+    o110 endif
+o<restore_abs> endsub
+
 M2
