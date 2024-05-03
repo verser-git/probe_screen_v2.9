@@ -377,7 +377,7 @@ class ProbeScreen(object):
             if distance is not None:
                 # set a non-default wait limit for wait_complete()
                 time_in = 1 + (distance / self.ps_rapid_speed ) * 60
-            print("time_in=", time_in)
+#            print("time_in=", time_in)
             self.command.mdi(l)
             self.command.wait_complete(time_in)
             if self.error_poll() == -1:
@@ -422,7 +422,7 @@ class ProbeScreen(object):
         else:
             print("Unable to poll %s GUI for errors" % self.display)
             return -1
-        print("error_pin = ", error_pin	)
+#        print("error_pin = ", error_pin	)
         if "TRUE" in error_pin.decode("utf-8"):
             text = "See notification popup"
             self.add_history("Error: %s" % text)
